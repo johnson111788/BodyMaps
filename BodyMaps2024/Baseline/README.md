@@ -30,7 +30,7 @@ For more usage, please refer to [the repositry of Universal-Model](https://githu
 
 ### 3. Evaluation
 
-Please refer to [BodyMaps24 Evaluation Code](https://github.com/johnson111788/BodyMaps/tree/main/BodyMaps2024/Evaluation).
+Please refer to [BodyMaps24 Evaluation Code](https://github.com/johnson111788/BodyMaps/tree/master/BodyMaps2024/Evaluation).
 
 ### 4. Build a Docker Image
 
