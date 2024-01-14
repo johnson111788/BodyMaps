@@ -16,8 +16,8 @@ def eval(args):
     try:
         
         team_outpath = join(args.save_path, args.name)        
-        
-        mean_wdsc, mean_wnds, mean_dsc, mean_nsd = cal_metric(out_path=team_outpath, pred_path=join(team_outpath, './outputs/'), dataset_path=args.data_path, num_workers=16)
+        os.makedirs(team_outpath, exist_ok=True)
+        mean_wdsc, mean_wnds, mean_dsc, mean_nsd = cal_metric(out_path=team_outpath, pred_path=join(team_outpath, './outputs/'), dataset_path=args.data_path, num_workers=10)
         
         with open(os.path.join(team_outpath, 'final_scores.txt'),'a') as score_file:
             score_file.writelines("docker_name, wmDSC, wmNSD")
@@ -41,6 +41,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    add_file_handler_to_logger(name=args.docker+"_ACC", dir_path="logs/", level="DEBUG")
+    add_file_handler_to_logger(name=args.name+"_ACC", dir_path="logs/", level="DEBUG")
     
     eval(args)
