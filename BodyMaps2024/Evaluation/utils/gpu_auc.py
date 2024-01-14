@@ -7,9 +7,9 @@ matplotlib.use("Agg")
 from utils.logger import logger
 
 
-def gpu_auc(team_outpath, csv_path, time_interval):
+def gpu_auc(gpu_outpath, csv_path, time_interval):
     
-    jsonl = sorted(glob.glob(team_outpath + "/*.json"))
+    jsonl = sorted(glob.glob(gpu_outpath + "/*.json"))
     alldata = []
     all_time = []
     all_MaxGPU = []

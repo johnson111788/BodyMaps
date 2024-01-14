@@ -19,13 +19,18 @@ def eval(args):
         
         name = args.docker.split('.')[0]
         team_outpath = join(args.save_path, name)
+        gpu_outpath = join(team_outpath, 'GPU-Time')
         os.makedirs(team_outpath, exist_ok=True)
+        os.makedirs(gpu_outpath, exist_ok=True)
         
         time_flag=0
         
         logger.info(f"Evaluating {name}")
         for test_case_infor in tqdm(test_cases_infor):
             case = test_case_infor['name']
+            
+            if os.path.exists(join(team_outpath, case + ".json")):
+                continue
             
             if not check_dir(args.temp_in):
                 logger.error("please check inputs folder", args.temp_in)
@@ -34,7 +39,7 @@ def eval(args):
             
             logger.info(f"{case} start predict...")
 
-            json_path = join(team_outpath, case + ".json")
+            json_path = join(gpu_outpath, case + ".json")
             runtime = efficiency(args.docker_path, name, json_path, args.time_interval, 0, args.sleep_time)
             logger.info(f"{case} finished!")
 
@@ -47,7 +52,7 @@ def eval(args):
                 raise RuntimeError(f'20% of the case runtime exceeds upper limit for {args.docker}, so the program is interrupted')
         
         csv_path = join(team_outpath, 'efficiency.csv')
-        mean_runtime, mean_AUC = gpu_auc(team_outpath, csv_path, args.time_interval)
+        mean_runtime, mean_AUC = gpu_auc(gpu_outpath, csv_path, args.time_interval)
 
         shutil.move(args.temp_out, team_outpath)
         os.mkdir(args.temp_out)
@@ -56,7 +61,7 @@ def eval(args):
         shutil.rmtree(args.temp_in)
         os.mkdir(args.temp_in)
         
-        mean_wdsc, mean_wnds, mean_dsc, mean_nsd = cal_metric(out_path=team_outpath, pred_path=join(team_outpath, args.temp_out), dataset_path=args.data_path, num_workers=8)
+        mean_wdsc, mean_wnds, mean_dsc, mean_nsd = cal_metric(out_path=team_outpath, pred_path=join(team_outpath, args.temp_out), dataset_path=args.data_path, num_workers=16)
         
         final_score = (mean_dsc*mean_nsd)/(mean_runtime*mean_AUC)
         with open(os.path.join(team_outpath, 'final_scores.txt'),'a') as score_file:

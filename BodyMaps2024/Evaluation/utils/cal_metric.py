@@ -1,5 +1,6 @@
 import os, time, csv, glob, warnings, torch
 import numpy as np, nibabel as nib
+from tqdm import tqdm
 warnings.filterwarnings("ignore")
 from monai.transforms import AsDiscrete
 
@@ -106,7 +107,7 @@ def metrics_engine(dataset_path, out_path, pred_path_list, num_workers):
     csv_nsd.close()
     
     pool = Pool(processes=num_workers)
-    for index, pred_path in enumerate(pred_path_list):
+    for index, pred_path in tqdm(enumerate(pred_path_list)):
         pool.apply_async(metrics_computer, (dataset_path, pred_path, out_path,organ_dice_results, organ_nsd_results))
     pool.close()
     pool.join()
